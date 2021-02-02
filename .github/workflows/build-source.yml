@@ -17,5 +17,5 @@ jobs:
       - name: Build Mono GTK# Assemblies
         uses: ./bld
         with:
-          version: "2.12.4"
-          tarball-extension: .tar.bz2
+          version: "2.12.45"
+          tarball-extension: .tar.gz
