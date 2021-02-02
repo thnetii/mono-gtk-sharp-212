@@ -19,3 +19,9 @@ jobs:
         with:
           version: "2.12.45"
           tarball-extension: .tar.gz
+      - name: Upload compiled assemblies
+        uses: actions/upload-artifact@v2
+        with:
+          name: gtk-sharp-lib
+          path: |
+            lib
