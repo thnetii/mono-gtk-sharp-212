@@ -18,8 +18,14 @@ runs:
   using: composite
   steps:
     - id: docker-build-configure
-      run: docker build -t "${{ github.repository }}:${{ github.run_id }}" --build-arg GTKSHARPVERSION=${{ inputs.version }} --build-arg GKTSHARPTARBALLEXT=${{ inputs.tarball-extension }} - < "${{ github.action_path }}/Dockerfile"
+      run: |
+        echo "::group::docker build"
+        docker build -t "${{ github.repository }}:${{ github.run_id }}" --build-arg GTKSHARPVERSION=${{ inputs.version }} --build-arg GKTSHARPTARBALLEXT=${{ inputs.tarball-extension }} - < "${{ github.action_path }}/Dockerfile"
+        echo "::endgroup::"
       shell: bash
     - id: docker-run-make
-      run: docker run --rm -v "${{ inputs.output-directory }}:/usr/src/gtk-sharp-${{ inputs.version }}/lib" "${{ github.repository }}:${{ github.run_id }}" make
+      run: |
+        echo "::group::make"
+        docker run --rm -v "${{ inputs.output-directory }}:/usr/src/gtk-sharp-${{ inputs.version }}/lib" "${{ github.repository }}:${{ github.run_id }}" make
+        echo "::endgroup::"
       shell: bash
