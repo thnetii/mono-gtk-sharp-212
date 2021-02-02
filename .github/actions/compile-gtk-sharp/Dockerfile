@@ -32,4 +32,4 @@ ADD https://download.mono-project.com/sources/gtk-sharp212/gtk-sharp-${GTKSHARPV
 RUN     tar -xf /tmp/gtk-sharp-${GTKSHARPVERSION}${GKTSHARPTARBALLEXT} -C /usr/src
 
 WORKDIR /usr/src/gtk-sharp-${GTKSHARPVERSION}
-RUN     sh ./configure
+RUN     sh ./configure --prefix=/opt/gtk-sharp-2.12

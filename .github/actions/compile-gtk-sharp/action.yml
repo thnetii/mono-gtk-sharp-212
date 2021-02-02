@@ -13,7 +13,7 @@ inputs:
   output-directory:
     required: true
     description: The output directory where the compiled assemblies will be placed
-    default: ${{ github.workspace }}/lib
+    default: ${{ github.workspace }}/artifacts
 runs:
   using: composite
   steps:
@@ -26,6 +26,6 @@ runs:
     - id: docker-run-make
       run: |
         echo "::group::make"
-        docker run --rm -v "${{ inputs.output-directory }}:/usr/src/gtk-sharp-${{ inputs.version }}/lib" "${{ github.repository }}:${{ github.run_id }}" make
+        docker run --rm -v "${{ inputs.output-directory }}:/opt/gtk-sharp-2.12" "${{ github.repository }}:${{ github.run_id }}" make install
         echo "::endgroup::"
       shell: bash

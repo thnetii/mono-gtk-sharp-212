@@ -15,7 +15,7 @@ jobs:
         with:
           submodules: recursive
       - name: Build Mono GTK# Assemblies
-        uses: ./bld
+        uses: ./.github/actions/compile-gtk-sharp
         with:
           version: "2.12.45"
           tarball-extension: .tar.gz
@@ -24,4 +24,5 @@ jobs:
         with:
           name: gtk-sharp-lib
           path: |
-            lib
+            artifacts/lib/mono/gtk-sharp-2.0
+            !artifacts/lib/mono/gtk-sharp-2.0/policy.*
