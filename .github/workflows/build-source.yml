@@ -1,0 +1,18 @@
+name: Build GTK# 2.12
+on:
+  - push
+  - pull_request
+defaults:
+  run:
+    shell: pwsh
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chekout ${{ github.repository }}@${{ github.ref }}
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+      - name: Build Mono GTK# Assemblies
+        uses: ./bld
