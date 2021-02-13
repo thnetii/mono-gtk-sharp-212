@@ -9,6 +9,7 @@ jobs:
     env:
       GTKSHARPVERSION: 2.12.45
       GKTSHARPTARBALLEXT: .tar.gz
+      GKTSHARPTARBALLFLAGS: -xz
     steps:
       - name: Chekout ${{ github.repository }}@${{ github.ref }}
         uses: actions/checkout@v2
@@ -22,7 +23,7 @@ jobs:
       - name: "Download / Extract GTK# Sources"
         run: |
           mkdir -p "${{ github.workspace }}/obj"
-          curl -sSL "${{ steps.configuration.outputs.download-url }}" | tar -x -C "${{ github.workspace }}/obj"
+          curl -sSL "${{ steps.configuration.outputs.download-url }}" | tar ${{ env.GKTSHARPTARBALLFLAGS }} -C "${{ github.workspace }}/obj"
         shell: bash
       - name: "Build Mono GTK# Assemblies"
         run: |
