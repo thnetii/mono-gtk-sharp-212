@@ -30,7 +30,10 @@ jobs:
           $MonodocTypeXml = $MonodocIndex.SelectSingleNode("/Overview/Types")
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"GtkSharp.GnomeVfsSharp`"]")) | Out-Null
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"Rsvg`"]")) | Out-Null
-          $MonodocIndex.Save($MonodocIndexPath)
+          $XmlWriter = [System.Xml.XmlWriter]::Create($MonodocIndexPath, (New-Object System.Xml.XmlWriterSettings -Property @{ Indent = $true; }))
+          $MonodocIndex.WriteTo($XmlWriter)
+          $XmlWriter.Flush()
+          $XmlWriter.Close()
         shell: pwsh
       - run: |
           mkdir -p ./artifacts/doc
