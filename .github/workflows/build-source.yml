@@ -23,24 +23,22 @@ jobs:
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
             sh -c "make && make install && cp ./COPYING /opt/LICENSE && cp -r ./doc/en /opt/monodoc"
+          cp -r "${{ github.workspace }}/artifacts/monodoc" "${{ github.workspace }}/artifacts/monodoc-tmp"
         shell: bash
       - run: |
-          [string]$MonodocIndexPath = Resolve-Path ./artifacts/monodoc/index.xml
+          [string]$MonodocIndexPath = Resolve-Path "${{ github.workspace }}/artifacts/monodoc-tmp/index.xml"
           [xml]$MonodocIndex = Get-Content -LiteralPath $MonodocIndexPath
           $MonodocTypeXml = $MonodocIndex.SelectSingleNode("/Overview/Types")
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"GtkSharp.GnomeVfsSharp`"]")) | Out-Null
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"Rsvg`"]")) | Out-Null
-          $XmlWriter = [System.Xml.XmlWriter]::Create($MonodocIndexPath, (New-Object System.Xml.XmlWriterSettings -Property @{ Indent = $true; }))
-          $MonodocIndex.WriteTo($XmlWriter)
-          $XmlWriter.Flush()
-          $XmlWriter.Close()
+          $MonodocIndex.Save($MonodocIndexPath)
         shell: pwsh
       - run: |
           mkdir -p ./artifacts/doc
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             -w "/opt/doc" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            mdoc export-msxdoc /opt/monodoc
+            mdoc export-msxdoc /opt/monodoc-tmp
         shell: bash
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
