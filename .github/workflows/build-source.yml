@@ -22,7 +22,23 @@ jobs:
             - < Dockerfile
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            sh -c "make && make install && cp ./COPYING /opt/LICENSE"
+            sh -c "make && make install && cp ./COPYING /opt/LICENSE && cp -r ./doc/en /opt/monodoc"
+        shell: bash
+      - run: |
+          [string]$MonodocIndexPath = Resolve-Path ./artifacts/monodoc/index.xml
+          [xml]$MonodocIndex = Get-Content -LiteralPath $MonodocIndexPath
+          $MonodocTypeXml = $MonodocIndex.SelectSingleNode("/Overview/Types")
+          $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"GtkSharp.GnomeVfsSharp`"]")) | Out-Null
+          $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"Rsvg`"]")) | Out-Null
+          $MonodocIndex.Save($MonodocIndexPath)
+        shell: pwsh
+      - run: |
+          mkdir -p ./artifacts/doc
+          docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
+            -w "/opt/doc" \
+            "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
+            mdoc export-msxdoc /opt/monodoc
+        shell: bash
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
         with:
@@ -30,6 +46,11 @@ jobs:
           path: |
             artifacts/lib/mono/gtk-sharp-2.0
             !artifacts/lib/mono/gtk-sharp-2.0/policy.*
+      - name: Upload XML Documentation files
+        uses: actions/upload-artifact@v2
+        with:
+          name: gtk-sharp-lib
+          path: artifacts/doc/*.xml
       - name: Upload LICENSE
         uses: actions/upload-artifact@v2
         with:
