@@ -76,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: gtk-sharp-lib
-          path: artifacts/LICENSE
+          path: ${{ github.workspace }}/obj/gtk-sharp-${{ env.GTKSHARPVERSION }}/COPYING
