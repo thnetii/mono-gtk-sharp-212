@@ -30,8 +30,10 @@ jobs:
           mkdir -p "${{ github.workspace }}/artifacts"
           mkdir -p "${{ github.workspace }}/artifacts/lib/mono/gtk-sharp-2.0"
           mkdir -p "${{ github.workspace }}/artifacts/doc"
+          echo "::group::apt install"
           docker build -t "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
             - < Dockerfile
+          echo "::endgroup::"
           docker run --rm \
             -v "${{ github.workspace }}/artifacts:/opt" \
             -v "${{ github.workspace }}/obj/gtk-sharp-${{ env.GTKSHARPVERSION }}:/workspace/gtk-sharp-${{ env.GTKSHARPVERSION }}" \
