@@ -22,11 +22,12 @@ jobs:
             - < Dockerfile
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            make install
+            sh -c "make && make install && cp ./COPYING /opt/LICENSE"
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
         with:
           name: gtk-sharp-lib
           path: |
+            artifacts/LICENSE
             artifacts/lib/mono/gtk-sharp-2.0
             !artifacts/lib/mono/gtk-sharp-2.0/policy.*
