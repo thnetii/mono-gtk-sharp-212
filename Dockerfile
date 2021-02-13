@@ -19,6 +19,7 @@ RUN     export DEBIAN_FRONTEND=noninteractive\
     &&  apt-get update\
     &&  apt-get install --no-install-recommends --yes\
             build-essential\
+            libtool autoconf automake\
     &&  apt-get autoremove --yes\
     &&  rm -rf /var/lib/apt/lists/*
 RUN     export DEBIAN_FRONTEND=noninteractive\
@@ -32,4 +33,10 @@ ADD https://download.mono-project.com/sources/gtk-sharp212/gtk-sharp-${GTKSHARPV
 RUN     tar -xf /tmp/gtk-sharp-${GTKSHARPVERSION}${GKTSHARPTARBALLEXT} -C /usr/src
 
 WORKDIR /usr/src/gtk-sharp-${GTKSHARPVERSION}
-RUN     sh ./configure
+
+# Replace package search for mono-cairo libraries with enforced build local mono.cairo option
+RUN     sed -i configure.in -e 's/^PKG_CHECK_MODULES(MONO_CAIRO\,\s*mono-cairo.*/enable_mono_cairo=yes \#\0/'\
+    &&  autoreconf -i\
+    &&  autoconf
+
+RUN     sh ./configure --prefix=/opt
