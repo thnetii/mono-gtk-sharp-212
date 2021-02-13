@@ -36,7 +36,6 @@ jobs:
         shell: pwsh
       - name: "Export XML Documentation files"
         run: |
-          mkdir -p ./artifacts/doc
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             -v "${{ github.workspace }}/tmp/monodoc-tmp:/workspaces/monodoc" \
             -w "/opt/doc" \
