@@ -22,7 +22,7 @@ jobs:
       - name: "Download / Extract GTK# Sources"
         run: |
           mkdir -p "${{ github.workspace }}/obj"
-          curl -LORJ "${{ steps.configuration.outputs.download-url }}" | tar -x -C "${{ github.workspace }}/obj"
+          curl -sSL "${{ steps.configuration.outputs.download-url }}" | tar -x -C "${{ github.workspace }}/obj"
         shell: bash
       - name: "Build Mono GTK# Assemblies"
         run: |
