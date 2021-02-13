@@ -20,8 +20,8 @@ jobs:
             --build-arg "GTKSHARPVERSION=${{ env.GTKSHARPVERSION }}" \
             --build-arg "GKTSHARPTARBALLEXT=${{ env.GKTSHARPTARBALLEXT }}" \
             - < Dockerfile
-          docker run --rm "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            -v "${{ github.workspace }}/artifacts:/opt" \
+          docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
+            "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
             make install
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
