@@ -19,13 +19,17 @@ jobs:
           submodules: recursive
       - name: "Build Mono GTK# Assemblies"
         run: |
-          docker build -t "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            --build-arg "GTKSHARPVERSION=${{ env.GTKSHARPVERSION }}" \
-            --build-arg "GKTSHARPTARBALLEXT=${{ env.GKTSHARPTARBALLEXT }}" \
+          Write-Host "::group::docker build -t ${{ github.repository }}:${{ env.GTKSHARPVERSION }}"
+          docker build -t "`"${{ github.repository }}:${{ env.GTKSHARPVERSION }}`"" `
+            --build-arg "`"GTKSHARPVERSION=${{ env.GTKSHARPVERSION }}`"" `
+            --build-arg "`"GKTSHARPTARBALLEXT=${{ env.GKTSHARPTARBALLEXT }}`"" `
             - < Dockerfile
-          docker run --rm "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            -v "${{ github.workspace }}/artifacts:/opt" \
+          Write-Host "::endgroup::"
+          Write-Host "::group::docker run ${{ github.repository }}:${{ env.GTKSHARPVERSION }} make install"
+          docker run --rm "`"${{ github.repository }}:${{ env.GTKSHARPVERSION }}`"" `
+            -v "`"${{ github.workspace }}/artifacts:/opt`"" `
             make install
+          Write-Host "::endgroup::"
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
         with:
