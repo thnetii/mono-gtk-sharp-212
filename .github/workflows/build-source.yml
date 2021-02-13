@@ -25,7 +25,8 @@ jobs:
             sh -c "make && make install && cp ./COPYING /opt/LICENSE && cp -r ./doc/en /opt/monodoc"
           cp -r "${{ github.workspace }}/artifacts/monodoc" "${{ github.workspace }}/artifacts/monodoc-tmp"
         shell: bash
-      - run: |
+      - name: "Update Monodoc index"
+        run: |
           [string]$MonodocIndexPath = Resolve-Path "${{ github.workspace }}/artifacts/monodoc-tmp/index.xml"
           [xml]$MonodocIndex = Get-Content -LiteralPath $MonodocIndexPath
           $MonodocTypeXml = $MonodocIndex.SelectSingleNode("/Overview/Types")
@@ -33,7 +34,8 @@ jobs:
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"Rsvg`"]")) | Out-Null
           $MonodocIndex.Save($MonodocIndexPath)
         shell: pwsh
-      - run: |
+      - name: "Export XML Documentation files"
+        run: |
           mkdir -p ./artifacts/doc
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             -w "/opt/doc" \
