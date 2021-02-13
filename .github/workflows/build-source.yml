@@ -23,11 +23,11 @@ jobs:
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
             sh -c "make && make install && cp ./COPYING /opt/LICENSE && cp -r ./doc/en /opt/monodoc"
-          cp -r "${{ github.workspace }}/artifacts/monodoc" "${{ github.workspace }}/artifacts/monodoc-tmp"
+          mkdir -p "${{ github.workspace }}/tmp" && cp -r "${{ github.workspace }}/artifacts/monodoc" "${{ github.workspace }}/tmp/monodoc-tmp"
         shell: bash
       - name: "Update Monodoc index"
         run: |
-          [string]$MonodocIndexPath = Resolve-Path "${{ github.workspace }}/artifacts/monodoc-tmp/index.xml"
+          [string]$MonodocIndexPath = Resolve-Path "${{ github.workspace }}/tmp/monodoc-tmp/index.xml"
           [xml]$MonodocIndex = Get-Content -LiteralPath $MonodocIndexPath
           $MonodocTypeXml = $MonodocIndex.SelectSingleNode("/Overview/Types")
           $MonodocTypeXml.RemoveChild($MonodocTypeXml.SelectSingleNode("Namespace[@Name=`"GtkSharp.GnomeVfsSharp`"]")) | Out-Null
@@ -38,9 +38,10 @@ jobs:
         run: |
           mkdir -p ./artifacts/doc
           docker run --rm -v "${{ github.workspace }}/artifacts:/opt" \
+            -v "${{ github.workspace }}/tmp/monodoc-tmp:/workspaces/monodoc" \
             -w "/opt/doc" \
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
-            mdoc export-msxdoc /opt/monodoc-tmp
+            mdoc export-msxdoc /workspaces/monodoc
         shell: bash
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
