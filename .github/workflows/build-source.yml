@@ -60,6 +60,20 @@ jobs:
             "${{ github.repository }}:${{ env.GTKSHARPVERSION }}" \
             mdoc export-msxdoc "/workspace/gtk-sharp-${{ env.GTKSHARPVERSION }}/doc/en"
         shell: bash
+      - name: "Remove superfluous XML Documentation files"
+        run: |
+          $XmlDocPath = Resolve-Path "${{ github.workspace }}/artifacts/doc"
+          $AssemblyPath = Resolve-Path "${{ github.workspace }}/artifacts/lib/mono/gtk-sharp-2.0"
+          Get-ChildItem -LiteralPath $XmlDocPath -Filter "*.xml" -File | ForEach-Object {
+            if (-not (Test-Path (Join-Path $AssemblyPath "$($_.BaseName).dll"))) {
+              Remove-Item -LiteralPath $_.FullName -Verbose
+            }
+          }
+        shell: pwsh
+      - name: "Copy LICENSE file"
+        run: |
+          cp "${{ github.workspace }}/obj/gtk-sharp-${{ env.GTKSHARPVERSION }}/COPYING" "${{ github.workspace }}/artifacts/LICENSE"
+        shell: bash
       - name: Upload compiled assemblies
         uses: actions/upload-artifact@v2
         with:
@@ -76,4 +90,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: gtk-sharp-lib
-          path: ${{ github.workspace }}/obj/gtk-sharp-${{ env.GTKSHARPVERSION }}/COPYING
+          path: artifacts/LICENSE
