@@ -1,3 +1,4 @@
+sed -i configure.in -e 's/^PKG_CHECK_MODULES(MONO_CAIRO\,\s*mono-cairo.*/enable_mono_cairo=yes \#\0/'
 echo "::group::autoreconf"
 autoreconf -i
 echo "::endgroup::"
