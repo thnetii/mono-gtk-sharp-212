@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    $CommonMetadataElements$
+    <dependencies>
+      <group targetFramework=".NETFramework4.6" />
+    </dependencies>
+  </metadata>
+  <files>
+    $CommonFileElements$
+    <file src="$PackageLicenseFileSourcePath$" target="LICENSE" />
+  </files>
+</package>
