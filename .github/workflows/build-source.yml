@@ -1,7 +1,9 @@
 name: "Build GTK# 2.12"
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+  pull_request: {}
 jobs:
   build:
     name: Build
