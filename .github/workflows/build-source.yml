@@ -69,19 +69,19 @@ jobs:
           cp "${{ github.workspace }}/obj/gtk-sharp-${{ env.GTKSHARPVERSION }}/COPYING" "${{ github.workspace }}/artifacts/LICENSE"
         shell: bash
       - name: Upload compiled assemblies
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gtk-sharp-lib
           path: |
             artifacts/lib/mono/gtk-sharp-2.0
             !artifacts/lib/mono/gtk-sharp-2.0/policy.*
       - name: Upload XML Documentation files
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gtk-sharp-lib
           path: artifacts/doc/*.xml
       - name: Upload LICENSE
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: gtk-sharp-lib
           path: artifacts/LICENSE
